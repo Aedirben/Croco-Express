@@ -2,11 +2,12 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
 <title>CROCODILE EXPRESS - Hénin-Beaumont</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=JetBrains+Mono:wght@800&display=swap">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
+  *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+  input{-webkit-user-select:text;user-select:text}
   html,body{height:100%}
   body{overflow:hidden;background:#5EB0FF;font-family:'Fredoka',system-ui,sans-serif;touch-action:none}
   canvas{display:block;position:fixed;inset:0}
@@ -363,6 +364,16 @@ $('reviewBtn').addEventListener('click',e=>{
   try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(x){}
   if(!w){try{window.top.location.href=u;}catch(x){window.location.href=u;}}
 });
+// Anti-zoom Safari : pas de zoom au double-tap ni au pincement
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
+$('controls').addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
+let lastTap=0;
+document.addEventListener('touchend',e=>{
+  const n=Date.now(),t=e.target;
+  if(n-lastTap<400&&(t===renderer.domElement||(t.closest&&t.closest('#controls'))))e.preventDefault();
+  lastTap=n;
+},{passive:false});
+document.addEventListener('dblclick',e=>{if(!(e.target.closest&&e.target.closest('input')))e.preventDefault();});
 $('restartBtn').addEventListener('click',()=>{initAudio();reset();});
 $('saveBtn').addEventListener('click',()=>{
   if(saved)return;
