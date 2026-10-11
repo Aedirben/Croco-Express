@@ -1,0 +1,117 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
+<title>CROCODILE EXPRESS - Hénin-Beaumont</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=JetBrains+Mono:wght@800&display=swap">
+<style>
+{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+input{-webkit-user-select:text;user-select:text}
+canvas,#controls,#controls {touch-action:none}
+html,body{height:100%;width:100%;position:fixed;inset:0;overflow:hidden;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+body{overflow:hidden;background:#5EB0FF;font-family:'Fredoka',system-ui,sans-serif;touch-action:none}
+canvas{display:block;position:fixed;inset:0}
+#startScreen{position:fixed;inset:0;z-index:15;background:radial-gradient(ellipse at 50% 0%,#2f8bff 0%,#1450c8 35%,#0b2a7a 70%,#06143d 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(14px + env(safe-area-inset-bottom,0px));overflow:auto;font-family:'Press Start 2P','Courier New',monospace;color:#fff}
+#startScreen::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.05) 0 2px,transparent 2px 4px);pointer-events:none;z-index:3}
+#startScreen::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,20,.55) 100%);pointer-events:none;z-index:3}
+#startScreen>*{position:relative;z-index:2}
+#startScreen>.grid{position:absolute;left:-50%;right:-50%;bottom:0;height:40%;z-index:1;background:linear-gradient(rgba(90,210,255,.6) 1px,transparent 1px) 0 0/100% 28px,linear-gradient(90deg,rgba(90,210,255,.6) 1px,transparent 1px) 0 0/48px 100%;transform:perspective(260px) rotateX(62deg);transform-origin:bottom;opacity:.55;animation:gridMove 1s linear infinite}
+@keyframes gridMove{from{background-position:0 0,0 0}to{background-position:0 28px,0 0}}
+.topLabel{background:rgba(0,20,90,.65);border:2px solid #7fe3ff;box-shadow:0 0 14px rgba(79,195,255,.7);padding:8px 12px;font-size:8px;letter-spacing:1px;color:#bff0ff;text-shadow:0 0 6px #4fc3ff}
+.heroCroco{width:min(150px,40vw);margin:12px 0 4px;filter:drop-shadow(0 0 14px rgba(90,210,255,.9)) drop-shadow(0 8px 10px rgba(0,0,0,.5));animation:float 2.4s ease-in-out infinite;object-fit:contain;background:transparent}
+.heroEmoji{font-size:84px;line-height:1;margin:10px 0 4px;filter:drop-shadow(0 0 14px rgba(90,210,255,.9));animation:float 2.4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.mainTitle{font-size:min(9vw,34px);line-height:1.3;color:#FFD23F;letter-spacing:1px;text-shadow:0 3px 0 #b8860b,0 6px 0 #0b2a7a,0 0 20px #4fc3ff;margin:6px 0 12px;animation:flicker 3s infinite}
+@keyframes flicker{0%,92%,100%{opacity:1}94%{opacity:.75}96%{opacity:1}98%{opacity:.85}}
+.subtitle{border:3px solid #7fe3ff;box-shadow:0 0 0 3px #0b2a7a,0 0 18px rgba(79,195,255,.6);background:rgba(6,20,70,.78);padding:12px 14px;max-width:330px;font-size:9px;line-height:2;color:#fff}
+.subtitle .g{color:#6dff9c}.subtitle .r{color:#ff6b86}
+.controlHint{margin-top:12px;font-size:8px;color:#9fe8ff}
+.blink{margin-top:14px;font-size:10px;color:#fff;text-shadow:0 0 8px #4fc3ff;animation:blink 1s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+.playBtn{margin-top:8px;background:#FFD23F;color:#06143d;border:4px solid #fff;border-radius:6px;padding:16px 26px;font-family:inherit;font-size:16px;box-shadow:0 6px 0 #b8860b,0 0 26px rgba(255,210,63,.75);cursor:pointer;animation:pulse 1.1s infinite}
+.playBtn:active{transform:translateY(4px);box-shadow:0 2px 0 #b8860b,0 0 20px rgba(255,210,63,.7)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.bestScore{margin-top:16px;border:2px dashed #7fe3ff;background:rgba(0,0,0,.35);padding:9px 12px;font-size:8px;color:#FFD23F;text-shadow:0 0 6px rgba(255,210,63,.6)}
+.foot{margin-top:12px;font-size:6px;line-height:1.8;color:#9fe8ff;opacity:.8}
+#stationPanel{position:fixed;top:calc(136px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) scale(.8);z-index:7;background:#223a5e;color:#fff;border:4px solid #fff;outline:4px solid #FFD23F;box-shadow:0 10px 30px rgba(0,0,0,.3);padding:8px 14px;text-align:center;min-width:190px;max-width:80vw;opacity:0;pointer-events:none;transition:all .5s}
+#stationPanel.show{opacity:1;transform:translateX(-50%) scale(1)}
+#wagonImg{display:block;width:min(130px,36vw);margin:0 auto 6px;border-radius:12px;background:#EFE9DC;box-shadow:0 4px 10px rgba(0,0,0,.3)}
+#wagonImg.roll{animation:rollIn .3s ease-out}
+@keyframes rollIn{from{transform:translateX(130%)}to{transform:translateX(0)}}
+#stationPanel .gare{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;background:#FFD23F;color:#223a5e;padding:4px 10px;display:inline-block;margin-bottom:6px}
+#stationPanel .city{font-size:18px;letter-spacing:-1px;line-height:1.05}
+#stationPanel .niveau{font-family:'JetBrains Mono',monospace;font-size:9px;opacity:.85;margin-top:6px}
+#ui-game{position:fixed;inset:0;z-index:6;pointer-events:none;display:none}
+.hudTop{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.score-pill{background:rgba(26,42,58,.92);color:#fff;font-family:'JetBrains Mono',monospace;padding:9px 14px;border-radius:99px;font-size:14px}
+.health-pill{background:rgba(255,255,255,.4);padding:6px 12px;border-radius:16px;text-align:center}
+.health-pill span{font-family:'JetBrains Mono',monospace;font-size:9px;color:#fff;letter-spacing:1px}
+.topStation{position:absolute;top:calc(52px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:#223a5e;color:#fff;border:2px solid #fff;outline:2px solid #FFD23F;padding:5px 14px;text-align:center;min-width:200px;max-width:92vw;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.topStation .lbl{font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:2px;color:#FFD23F}
+.topStation .name{font-size:12px;white-space:nowrap}
+.line{position:absolute;top:calc(104px + env(safe-area-inset-top,0px));left:10px;right:10px;display:flex;gap:3px;justify-content:center;align-items:center}
+.dot{width:17px;height:17px;border-radius:50%;background:rgba(255,255,255,.65);border:2px solid #223a5e;display:grid;place-items:center;font-size:8px;font-family:'JetBrains Mono',monospace;color:#223a5e}
+.dot.done{background:#2ECC71;color:#fff;border-color:#1a7a43}.dot.active{background:#FFD23F;transform:scale(1.15);border-color:#b89600}
+.soundBtn{pointer-events:auto;background:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:15px;cursor:pointer;box-shadow:0 3px 0 #1a2a3a;margin-top:6px}
+#controls{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);display:flex;gap:14px;pointer-events:auto}
+.btn{width:70px;height:70px;background:rgba(255,255,255,.96);border-radius:22px;display:grid;place-items:center;font-size:28px;box-shadow:0 6px 0 #1a2a3a;user-select:none;-webkit-user-select:none;touch-action:manipulation;cursor:pointer}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 #1a2a3a}
+#gameOver{position:fixed;inset:0;background:rgba(10,42,74,.94);display:none;flex-direction:column;align-items:center;justify-content:center;color:#fff;z-index:20;text-align:center;padding:20px;overflow:auto}
+#gameOver input{padding:12px 16px;border-radius:12px;border:none;font-size:18px;width:240px;text-align:center;margin:10px 0;font-family:inherit}
+.cta{background:#2ECC71;color:#fff;padding:13px 22px;border-radius:99px;border:none;font-family:inherit;font-size:15px;box-shadow:0 5px 0 #1a7a43;cursor:pointer;margin:5px}
+.cta.secondary{background:#FF3B30;box-shadow:0 5px 0 #8a1a14}
+.cta.ghost{background:#fff;color:#0a2a4a;box-shadow:0 5px 0 #bbb}
+#leaderboard{width:100%;max-width:340px;max-height:120px;overflow:auto;background:#fff;color:#0a2a4a;border-radius:12px;padding:10px;margin-top:10px;text-align:left;font-size:14px}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+<div id="startScreen">
+<div class="grid"></div>
+<div class="topLabel">★ CROCODILE HÉNIN-BEAUMONT ★</div>
+<img class="heroCroco" alt="Crocodile" id="heroImg" style="display:none">
+<div class="heroEmoji" id="heroEmoji">🐊</div>
+<h1 class="mainTitle">CROCODILE<br>EXPRESS</h1>
+<div class="subtitle">ATTRAPE <span class="g">🍎🥦🍉 +50</span><br>ÉVITE <span class="r">🥤🍔 -25</span></div>
+<div class="controlHint">👆 GLISSE TON POUCE</div>
+<div class="blink">PRÊT ?</div>
+<button class="playBtn" id="playBtn">▶ JOUER</button>
+<div class="bestScore" id="bestScoreDisplay">⭐ Meilleur score : 0</div>
+<p class="foot">15 GARES · LE PETIT CROCO VA GRANDIR ! · v16</p>
+</div>
+<div id="stationPanel"><img id="wagonImg" alt=""><div class="gare" id="stationTag">PROCHAIN ARRÊT</div><div class="city" id="stationCity"></div><div class="niveau" id="stationLevel"></div></div>
+<div id="ui-game">
+<div class="topStation"><div class="lbl">🚂 CROCODILE EXPRESS</div><div class="name" id="topStationName">GARE DE HÉNIN-BEAUMONT</div></div>
+<div class="hudTop">
+<div style="display:flex;flex-direction:column"><div class="score-pill">SCORE: <span id="score">0</span></div><button class="soundBtn" id="soundBtn">🔊</button></div>
+<div class="health-pill"><span>HEALTH</span><div id="hearts" style="font-size:17px">🫀 🫀 🫀</div></div>
+</div>
+<div class="line" id="line"></div>
+<div id="controls"><div class="btn" id="left">◀️</div><div class="btn" id="jump">⬆️</div><div class="btn" id="right">▶️</div></div>
+</div>
+<div id="gameOver">
+<h1 style="font-size:36px" id="goTitle">GAME OVER</h1>
+<p>Score : <b id="finalScore">0</b> pts · <span id="finalGare">Gare 1</span></p>
+<p id="newBest" style="color:#FFD23F;display:none;font-weight:600">🎉 NOUVEAU RECORD !</p>
+<input id="playerName" placeholder="Ton prénom" maxlength="12">
+<button class="cta" id="saveBtn">VALIDER MON SCORE</button>
+<a id="reviewBtn" class="cta secondary" href="https://maps.google.com/?cid=15168946808830234971" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">⭐ LAISSER UN AVIS GOOGLE</a>
+<button class="cta ghost" id="restartBtn">REJOUER</button>
+<div id="leaderboard"></div>
+</div>
+<script>
+(function(){
+// --- SEULE LIGNE MODIFIEE : IMAGE REFERENCE ---
+const CROCO_IMG='crocodile-reference.png';
+const WAGONS=['data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCACIANwDASIAAhEBAxEB/8QAHAAAAgIDAQEAAAAAAAAAAAAAAAUGBwEDBAII/8QARRAAAgEDAgQEAgYHBgUDBQAAAQIDAAQRBSEGEjFBE1FhcSKBBxQyQpHRFyNSVZOxwRUzQ1Oh4RY2c7LCYnLwJDVFgpL/xAAZAQACAwEAAAAAAAAAAAAAAAABAwACBAX/xAAiEQADAAICAgIDAQAAAAAAAAAAAQIDESExBBITIjJBUXH/2gAMAwEAAhEDEQA/APpAUUUUgYFZFYoqAM0YrGazmgEMUYozWKgArTf3kFjZzXV3IscES8zMdtv9+3rXBxJr1hw9pjXupS8ke4RBu0p/ZQdz/wDDXz3xxx7fcU3TqI2h0uKVOS2jPxHfYyD7x/0Hao2WS2Wvof0p6VqGqS29xE1pCzcsLMOZtjhufGwHtmrBtrmG7hS4tJo5oXJwyNkH2Ir5D0GXw7vTmMhwfF5V5Mqq5/HPXerI4W4n1DRp823x2xPxxSfZbzIHY+tK99PkY8fHBe5FYNKOGdet+ILFZrfkS4AxNBzZMZz3PceRpvvTNp8itNdmBRQaxRIZNFYzWq4uILRPEuJUhT9qRgB/rQ3omtm6ivEM0c0aywukkbrzKytkMPMHvXupsjCiiiiAzRRRUIFFFBqBMUUUUQAOlFA6UVAhRRRUIFFBoqACtdzOlrazXM7ARwo0jEbYVRk/yrZVJ/T3xPPJIOHLADw1CT3LpJ8RbfEZA7YwSO9AhV3FXEV3xVqU17dvJIGdmjtmbHgKfupjbGAM460shlJHjSFpPC+y6bOpz97zH+1asRseWQ+ESdmx8Pue4rZcBDbyhnZ5kI/WxHOAGX7XmD6VK4LRyOOHZ4RfpCkKu3hkmZuu7ds/d2/pUnt5lmjDxHKHIGe2OtQhTJcX5TMfOyJh0blVvjJyx7gkHb1FTG1m8aGJ8HDKFGFxzHG4HtWW+DTLHWharc6VqUV3ZuQyEGRe0id1NXNDxNps3D02sCUi2iXmkQn442/YI86oZ5WSBnRQzqQuGPKMk96xdXTrZPb+KI2Lr8JJYMR5gdRRVtLSK5Y2tovzhziCz1+28Sz5kkQBmifqoNeOIOItL0JD/aN0qyfdgTeR/ZRvVCaZxxPZWl2ttemyJPgyO2DI+P2PL+dJ/rd1ehrqI/V7csoku7onnYE4yFO56GrLI9fYrjwtrdE+4u+k+9lidbFl0m0P+Js0zfPovyzVc3+r6td2lzND4yx20Pjme8ZmcgsAORT3J8/WmSW1ra87pA95dGOQGe9IX4c7Oq9QMdu9IOIn1LUbp4zOJbWJVRXVuSFRjAGO+Mnrk1RW6eh/qp/FE2+jfjDVtK0mIRzi4gLuzQzDIbLHOP2flt6Vc3C/F9jrhWDla2vf8lz9r/2nv7V8/wCgRNbaZDEf1jLncbA5Ofw3pskhQq3MwIOVKHlwf55p6ehFxtn0gKxioZwBxX/bMX1C+cDUYl5lJODKg6nHYjbP4+dTMGrpiWtGRRQaxRAZrFFFQgUUUGoQB0oooxQCFBPnRS3V9bsdIMa3s3LJLkxxqMs+OuKDaS2wNjIUZrh07UbfUrVZ7OTxI88p7cp8iKj3HHGdtwtDAkkTS3VwGaNB9lQNiWI6f1oKk1tBXJ6+kvihuFuF57qAx/XXIjt0cZyTnLY/9PXyzivmJJnuCbiV/HnOSZg2XLebA9fepZrV1e63eyX9zeePNJnboi+i+Q9KTzaXbynnkRUlxu8Z5fxq3sFI4OVo4ZDcW8c6FDyyxD4snoM9j71zXCqbO7cOqxsy/Evpy7AdV9fOnen2AmvoZEnVo1GeZTgtjYjb+dcWp2tohlRIi3K4V3jPxFScgnsP60p1tjVOjmhcxanOSiuy+HzREDlbOcuo9Mg094ammtrV45Y5JI1bnjkl+8Cd+Xy7Goc3EM+nXVxBNZ24mVzh8nK46e464pjY8XxTYF7EIs7CSPLAe4O4qzxey5A2uiW3F48iKmEULnJHVvc0qub6K3yMnm/ZG5NejEL2APFPmNujRHINK7zQrp8+HcKsfk2xpkRMlXVdIWW+pizulvFtopZPGlVUl3ALDGdvLrTrSNX1GSO4n1N8KIhDBJKgwg6ELnpt3G9aNL0a6gTklEI+IsJCOYj1A86c2+mxLIHbmuJR999z+Q+VJyJN6NCS7Zy+LPfiNbeI8igATTAqG9SOrfOmFtpyqyyXLtcyrsuR8K+y9BWZ7y3tFPOxJHVVpDfcRvMzQ2C8xHUJ2926VWZ0F2+iTXN3DajMzqp/Y6k0ju+IZJSy2EbMygligycDrv0ApJawm8knN/IcRNy8qN8JyAd+560z4G1O10rSNV8e2kna7s57OB4zyiJ2U9c9QRirpFdl3fRLwVbW0WncTXN1LdXlzAJYVA5EiDruCOrHBO5q0xUV+jC/stQ4J0dbG7huHtrWOGYI2TG4XDAjqN6lYFMSM1dhRRRRKhRRRUIFFFFAJjO9ZzWh3wxHrWsy4NQh15qiPpk1KfU+MLSy0u6gRtPjIDHC/rjuV5twdsbVdyThXXJ7g4I618lcQXLf8Tah/aEM8LNeSeJGPhYDnPalZX9WhWV6ReHCvEVromlXc+tMIX8KOVljXmy+MYUDufPpVLcfcT3PFevve3KmCOJTFbxgbxx5zgkdT5mphqM0K6XItpJO9slqpjMhyTkbjcVX8gWWUxzxMjY6H86z+Hk3LVEh7Riw1AxzxrdsFjzgTA8oXbv5ijULj6xYs0k73AzgrH8IUc22OxJrNpYOJ2a2ZpF5HyqcrMfh8j2rEsHi28hi+KdlCBXP2FGMLJ29j61ot8mvGuOQspBFdsIgEikwolU/Aj4+yV7dSPevc1wysPHWJWWTeJVA5RkEg+Y32x5VrFrzy3c8cnJcMyCQOC0aFRkdevofxrVl7WWfmUGGJh4c7kFYyxyVOBkqcn8KrrZfZw31st1bLG6RROPEkU4PM2x3UnqNqiz2rRxGZJABsCufOpHqN3MbyC2kIKRJ8CfdAKk9fn50jyosdmJ+Jfu+lPhtIzN7Z06PrFzpkv8A9O4Vc5aNslH/AN/WrG0O/j1i1E8SFWXZ0LAch/L1qoldvFZcgoB1ppp17Pp0yyxEcvLjlPRh5Gr3IYrRaN1d29tnnfnI7Kf61G9Q4hlmEi2amQKuWWL7IHq3TPtSuNpL+5gW4YyRuhdowCqDbYHpmmpt0S3ZVC8gU45TyqNvLpSOnpmj/BVp0cmr26z3Lu0ZJxEuy7Huepp5HBHbxhURUA6KowBSXh65W30uFJM4YuR3J36V2HV7EqzLOkZTqJF5SPeg974Itfs1wc0p1WIO6AyhTyj4m+AbDbPajhiRo9J1CVRByfV3icPkuSVYgr+HWjhzNzfai1sclpC2VQM5Xk6j0pjoukmz0q+Nxk80DoQvXo2+R336UKpTwy+OHXRLfoo0mK34u06/trm+t3F1aRPCHKrIJYnaTm8/iUEDyzX0vnYb18jcB6rd2PGOl6hdzSSQxNFMEiLN4saxFV2O3MATX1Do+tWuq26y2UocEfZOzD3Hamq0zPkhrkcE1gHJwNz5VpVyzBR1JxVL8cfSbqC6hfWOmxIIoXaIKCedip3JP7PoKF16rZnu1HZdfjRkgCRCfIMK95r5+4e4stNVWNZWNvcsD+r5sqcdcN/SrB4R1+7udWisedmtBExBb0x0796zR5O69WiTkTLAzRmuXxa2xOSufWtQxHFdTBbhxkdaQa5xJa6ZHJnnnmUE+HEucY2IJ6Cu7Upwt9OM5wwBHyFUJret3lhxXrH1eXnhN1JzQyHmQ777dvlVMlUl9Sl16oZa9x9fa7pd7bxzxWsY3At8jIB6M3U5+VQLUrG4vUtblIJTdOVieQnKs2OpY98YFTuy17RtSs2sry3WxEgKFU2jOe4I6H3pfxFpOoRWMNnpls9zZIFMcxl5zyg/ZwOnvWFZq9tMVD9q5CPTrptDSxu794wiFUMa4UHqMk9cGuWe5W30iUXFulzcu68y4IjAXqVPqK82mgajKsX1iYRICR4UgEhQ/L86R6twzqwunhSdZoVUsgDhAD5kUxOG9bNtPCuiUataW8/1SSxtis8VwjJJEhASMj4uZe+PWuC2s55Z4xBZTZjYtzAKsbHfuexrv0nV2t9PgF7cRI8UYUynI5iOoPrWrVOKcIBbFn7L+dTJVLiSZcimfqKtX0qUWbrc3tvBLytiM55SPIkd/wDSo1c3wFqtqbaJZpBySMhOTttg49B+Jppf2N1ds0jzAls5DEZG3Xf2rXPp9pptuks+GlKhgxcjlJHbbenY5rX2Mium9sjN9qECpy2ULh0CqZHbCqMEH4R/PNKubEHU8u21erqV/BlAbHxjIxnruc1pzsOcGPIzntWxJaGI8KrCR22KkbYrfGSRjJIUZwa8+BIi8xQEdmXBFbvAaJHywyUBHLt3osKWh7p0ywTW8koblERGWJO/ljoDTCW6mlweWRBg7Ddh/QVHtUv41sobaKNlJ25mb2zt7961afqktqGH287dBlB6Ur03yNq9cEhitYlgWGLk5smTDHpt0PffrWV0x9Wv0tVBW6kcIko+IDbOHx2A35q6LGTxYEleT6tZ78jnGSvXqF2z5neuN9ZbS5RLpkzxy+IzIwbPhgjBHr171Vy2VPVxp0fDeu6eY70XL4V5XjVkRebYoQd8Y3zimeocSwmR7e0dX8c+CGkykYLbZ9aTaZFda5O4SaEEYDyXEgAxjGc5yevapfwhZWunYKRNNfliRK0XPEqjbIUjceZ70vIp7o04rqVqRjoHBFpaSR3TySMqEDxlfkXPQjOcsu2229SS516TTAF05BcumysPgAA6bfab50o0zSNfu1M893A8UkhOXBA5c+Wfh+VSKOzsrO8SbAluocBWXHKRjG/n8h86Q7f6GKN9kk4M4r1CWKP+0LVnj5slyQpXf+XvvVJ6xqFzZ8V31zayPFOLh25iu/KWP+hqzZbhpQvxAKPuIuF6/wDzelmraTZ6pC6XMS8+MLMpw6j0Pf2oLI3wzP5Xh+87XBGuHdV+vajJLLaWsT28RDTRRAO5J6EZ3Jq1OCfq7anFcwzuzsjqUZMAdP5VTmgWjWnEt/plijXJt3QmYJ9lR9ptz64x51dHB19psVjH8IjupXZPEYbvjfc9FHpS/VfLs58YnjeqJsZvWu2yfmiO/wB
+08:36
+99179ms
+
+
+
